@@ -20,12 +20,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -52,7 +54,38 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(modifier: Modifier = Modifier) {
-    ScrollModifiers(modifier)
+    MultiTouchDemo(modifier)
+}
+
+
+@Composable
+fun MultiTouchDemo(modifier: Modifier = Modifier) {
+
+    var scale by remember { mutableStateOf(1f) }
+    var angle by remember { mutableStateOf(0f) }
+
+    val state = rememberTransformableState {
+            scaleChange, offsetChange, rotationChange ->
+        scale *= scaleChange
+        angle += rotationChange
+    }
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier.fillMaxSize()
+    ) {
+        Box(
+            Modifier
+                .graphicsLayer(
+                    scaleX = scale,
+                    scaleY = scale,
+                    rotationZ = angle
+                )
+                .transformable(state = state)
+                .background(Color.Blue)
+                .size(100.dp)
+        )
+    }
 }
 
 @Composable
