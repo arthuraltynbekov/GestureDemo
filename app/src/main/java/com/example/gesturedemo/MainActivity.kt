@@ -7,6 +7,7 @@ import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.offset
 import androidx.compose.ui.unit.IntOffset
 import kotlin.math.roundToInt
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -63,11 +64,14 @@ fun MultiTouchDemo(modifier: Modifier = Modifier) {
 
     var scale by remember { mutableStateOf(1f) }
     var angle by remember { mutableStateOf(0f) }
+    var offset by remember { mutableStateOf(Offset.Zero) }
 
     val state = rememberTransformableState {
             scaleChange, offsetChange, rotationChange ->
+
         scale *= scaleChange
         angle += rotationChange
+        offset += offsetChange
     }
 
     Box(
@@ -79,7 +83,9 @@ fun MultiTouchDemo(modifier: Modifier = Modifier) {
                 .graphicsLayer(
                     scaleX = scale,
                     scaleY = scale,
-                    rotationZ = angle
+                    rotationZ = angle,
+                    translationX = offset.x,
+                    translationY = offset.y
                 )
                 .transformable(state = state)
                 .background(Color.Blue)
@@ -87,7 +93,6 @@ fun MultiTouchDemo(modifier: Modifier = Modifier) {
         )
     }
 }
-
 @Composable
 fun ClickDemo(modifier: Modifier = Modifier) {
 
